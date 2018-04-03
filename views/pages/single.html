@@ -36,12 +36,12 @@
 </head>
 
 <body>
-  <%if (message=='SUCCESS') { %>
+  {{#if "(message == 'SUCCESS')"  }}
     <div id="wrapper">
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0;background-color: #1E5799;">
-        <% include ../partials/header %>
+        {{> header }}
 
-          <% include ../partials/sidenavigation %>
+          {{> sidenavigation }}
 
             <div id="page-wrapper">
               <div class="row">
@@ -57,7 +57,7 @@
                     <!-- /.panel-heading -->
                     <div class="panel-body">
 
-                      <% include ../partials/body %>
+                      {{> body }}
 
                     </div>
                     <!-- /.panel-body -->
@@ -70,7 +70,7 @@
             </div>
 
     </div>
-    <% } else { %>
+    {{ else }}
       <div id="container">
         <h1 style="text-align:center;"> Login Page</h1>
         <form name="myForm" action='/login' method="post" onsubmit="return validateForm()">
@@ -92,7 +92,7 @@
           window.alert(msg);
         }
       </script>
-      <% } %>
+      {{/if}}
         <script src="assets/js/jquery-1.10.2.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
