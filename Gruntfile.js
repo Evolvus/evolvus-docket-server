@@ -5,7 +5,7 @@ module.exports = (grunt) => {
         "esversion": 6
       },
       files: {
-        src: ['server.js']
+        src: ['server.js', 'routes/*.js']
       }
     },
     watch: {
@@ -18,4 +18,4 @@ module.exports = (grunt) => {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('default', ['jshint']);
-}
+};

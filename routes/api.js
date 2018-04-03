@@ -9,4 +9,4 @@ module.exports = (router) => {
       // audit events
     });
 
-}
+};

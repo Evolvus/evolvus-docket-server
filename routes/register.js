@@ -7,4 +7,4 @@ module.exports = (router) => {
       // put the logic here related to registration
     });
 
-}
+};

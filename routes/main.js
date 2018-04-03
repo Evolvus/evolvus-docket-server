@@ -7,4 +7,4 @@ module.exports = function(router) {
     // make sure we go to the next routes and don't stop here
     next();
   });
-}
+};

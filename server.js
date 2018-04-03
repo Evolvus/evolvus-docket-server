@@ -12,9 +12,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const hbs = require('hbs');
+const helmet = require('helmet');
+
+
 const hbsViewEngine = hbs.__express;
-
-
 const app = express();
 const router = express.Router();
 
@@ -26,8 +27,8 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'), (err) => {
   }
 });
 
+app.use(helmet());
 app.use('/', router);
-
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 app.use(express.static(path.join(__dirname, 'public')));
