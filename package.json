@@ -1,0 +1,29 @@
+{
+  "name": "evolvus-docket-server",
+  "version": "1.0.0",
+  "description": "Common Audit Server for Evolvus Products",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evolvus/evolvus-docket-server.git"
+  },
+  "keywords": [
+    "evolvus",
+    "docket",
+    "audit"
+  ],
+  "author": "Kavya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Evolvus/evolvus-docket-server/issues"
+  },
+  "homepage": "https://github.com/Evolvus/evolvus-docket-server#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "handlebars": "^4.0.11"
+  }
+}
