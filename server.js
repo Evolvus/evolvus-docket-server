@@ -21,7 +21,7 @@ const router = express.Router();
 
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'), (err) => {
   if (err) {
-    debug('error registering partials: ' + err);
+    debug('error registering partials: ', err);
   } else {
     debug('registering hbs partials');
   }
@@ -29,11 +29,7 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'), (err) => {
 
 app.use(helmet());
 app.use('/', router);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'html');
 app.use(express.static(path.join(__dirname, 'public')));
-app.engine('html', hbsViewEngine);
-
 app.use(bodyParser.urlencoded({
   extended: false,
   limit: '50mb'
@@ -41,6 +37,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({
   limit: '50mb'
 }));
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+
+app.engine('html', hbsViewEngine);
+
 
 require('./routes/main')(router);
 
