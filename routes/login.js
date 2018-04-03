@@ -8,7 +8,8 @@ module.exports = (router) => {
       debug('lets try to render page', page);
 
       res.render(page, {
-        message: ""
+        message: "",
+        loggedIn: false
       });
     });
 

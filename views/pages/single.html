@@ -36,7 +36,7 @@
 </head>
 
 <body>
-  {{#if "(message == 'SUCCESS')"  }}
+  {{#if loggedIn }}
     <div id="wrapper">
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0;background-color: #1E5799;">
         {{> header }}
@@ -74,7 +74,7 @@
       <div id="container">
         <h1 style="text-align:center;"> Login Page</h1>
         <form name="myForm" action='/login' method="post" onsubmit="return validateForm()">
-          <input type="hidden" name="message" id="message" value="<%= message %>" />
+          <input type="hidden" name="message" id="message" value="{{ message }}" />
           <label for="createdBy">Username:</label>
           <input type="text" id="email" name="email">
           <label for="password">Password:</label>

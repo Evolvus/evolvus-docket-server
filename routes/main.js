@@ -1,5 +1,6 @@
 module.exports = function(router) {
 
+  require('./api')(router);
   require('./login')(router);
 
   router.use(function(req, res, next) {
