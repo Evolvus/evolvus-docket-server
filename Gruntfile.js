@@ -1,15 +1,24 @@
+/*
+ ** Normally we would use dist folder for distribution code
+ ** but since we are coming from the java world - 'target' folder
+ ** is more relevant to us. (default output folder of a maven job)
+ **
+ ** grunt clean => mvn clean
+ **
+ */
+
 module.exports = (grunt) => {
 
   grunt.initConfig({
     clean: {
       coverage: {
-        src: ['coverage/']
+        src: ['target/']
       }
     },
     copy: {
       coverage: {
         src: ['test/**'],
-        dest: 'coverage/'
+        dest: 'target/'
       }
     },
     mochaTest: {
@@ -17,15 +26,15 @@ module.exports = (grunt) => {
         options: {
           reporter: 'spec',
         },
-        src: ['./coverage/test/**/*.js']
+        src: ['./target/test/**/*.js']
       },
       coverage: {
         options: {
-          reporter: 'html-cov',
+          reporter: 'xunit',
           quiet: true,
-          captureFile: 'coverage.html'
+          captureFile: './target/coverage.xml'
         },
-        src: ['./coverage/test/**/*.js']
+        src: ['./target/test/**/*.js']
       }
     },
     jshint: {
@@ -48,5 +57,6 @@ module.exports = (grunt) => {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['clean', 'jshint', 'copy', 'mochaTest']);
+  grunt.registerTask('ci-build', ['clean', 'jshint', 'copy', 'mochaTest:coverage']);
+  grunt.registerTask('default', ['clean', 'jshint', 'copy', 'mochaTest:test']);
 };
