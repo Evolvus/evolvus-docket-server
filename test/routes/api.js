@@ -3,17 +3,17 @@
  */
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../../server');
+
 let should = chai.should();
 
 chai.use(chaiHttp);
-//const server = 'http://localhost:8080';
+const serverUrl = 'http://localhost:8080';
 
 
 describe('GET /audit', () => {
   it('get should return array of string', (done) => {
 
-    chai.request('http://localhost:8080')
+    chai.request(serverUrl)
       .get('/audit')
       .end((err, res) => {
         res.should.have.status(200);
@@ -42,7 +42,7 @@ describe('POST /audit', () => {
       keywords: 'login CDA'
     };
 
-    chai.request('http://localhost:8080')
+    chai.request(serverUrl)
       .post('/audit')
       .send(auditEvent)
       .end((err, res) => {
