@@ -1,5 +1,7 @@
 /*
  ** Get all the environment variables
+ ** The PORT env variable is not set in docker so
+ ** defaults to 8080
  */
 const PORT = process.env.PORT || 8080;
 
@@ -27,25 +29,22 @@ hbs.registerPartials(path.join(__dirname, 'views', 'partials'), (err) => {
   }
 });
 
-app.use(helmet());
-app.use('/', router);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({
-  extended: false,
-  limit: '50mb'
-}));
-app.use(bodyParser.json({
-  limit: '50mb'
-}));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
+
+app.use(helmet());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
 
 app.engine('html', hbsViewEngine);
 
 
 require('./routes/main')(router);
-
+app.use('/', router);
 
 /*
  ** Finally start the server
