@@ -12,14 +12,14 @@ module.exports = (router) => {
       let page = 'pages/single';
       debug('lets try to render page', page);
       res.render(page, {
-        message: "",
+        message: req.query.message,
         loggedIn: false
       });
     })
     .post((req, res, next) => {
       var body = _.pick(req.body, ['email', 'password']);
       user.authenticate(body.email, body.passowrd).then((result) => {
-        if (result) {
+        if (!(result)) {
           res.render('pages/single', {
             message: "",
             loggedIn: true

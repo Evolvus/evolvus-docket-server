@@ -12,9 +12,9 @@ module.exports = (router) => {
       var body = _.pick(req.body, ['username', 'email', 'password']);
       user.register(body).then((result) => {
         if (result) {
-          res.redirect('/login')
+          res.redirect('/login?message=' + "s");
         } else {
-          res.redirect('/register')
+          res.redirect('/register');
         }
       }).catch((e) => {
         res.status(400).send(e)

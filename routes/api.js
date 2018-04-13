@@ -18,13 +18,14 @@ module.exports = (router) => {
         let body = _.pick(req.body, auditAttributes);
         debug('request body is: ', JSON.stringify(body));
         docket.validate(body).then((result) => {
-          console.log("res", res);
           if (result) {
-            res.send(body);
+            docket.save(body).then((doc) => {
+              res.send(doc);
+            }).catch((e) => {
+              res.status(400)
+                .send(e);
+            });
           }
-        }).catch((e) => {
-          res.status(400)
-            .send(e);
         });
       } catch (e) {
         res.status(400)
@@ -32,7 +33,7 @@ module.exports = (router) => {
       }
     })
     .get((req, res, next) => {
-      res.send(auditAttributes);
+
     });
 
 };

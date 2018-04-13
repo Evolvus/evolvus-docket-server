@@ -4,7 +4,7 @@
  ** defaults to 8080
  */
 const PORT = process.env.PORT || 8080;
-
+var dbUrl = process.env.MONGO_DB_URL || 'mongodb://localhost:27017/Docket';
 
 /*
  ** Get all the required libraries
@@ -15,6 +15,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const hbs = require('hbs');
 const helmet = require('helmet');
+const mongoose = require('mongoose');
 
 
 const hbsViewEngine = hbs.__express;
@@ -45,6 +46,14 @@ app.engine('html', hbsViewEngine);
 
 require('./routes/main')(router);
 app.use('/', router);
+
+mongoose.connect(dbUrl, (err, db) => {
+  if (err) {
+    console.log('Failed to connect to the database');
+  } else {
+    console.log('connected to mongodb');
+  }
+});
 
 /*
  ** Finally start the server
