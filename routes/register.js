@@ -1,18 +1,8 @@
 const debug = require('debug')('evolvus-docket-server:routes:register');
-var {
-  User,
-  dbUrl
-} = require('evls-user-demo');
+const user = require('evolvus-user');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 
-mongoose.connect(dbUrl + '/Userss', (err, db) => {
-  if (err) {
-    console.log('Failed to connect to the database');
-  } else {
-    console.log('connected to mongodb');
-  }
-});
 
 module.exports = (router) => {
 
@@ -20,17 +10,14 @@ module.exports = (router) => {
     .post((req, res, next) => {
       // put the logic here related to registration
       var body = _.pick(req.body, ['username', 'email', 'password']);
-      var user = new User(body);
-      user.save().then(() => {
-        user.generateAuthToken();
-      }).then((token) => {
-        res.render('pages/single', {
-          message: "Registered Successfully"
-        });
+      user.register(body).then((result) => {
+        if (result) {
+          res.redirect('/login')
+        } else {
+          res.redirect('/register')
+        }
       }).catch((e) => {
-        res.status(400).render('pages/register', {
-          message: e.message
-        });
+        res.status(400).send(e)
       });
     })
     .get((req, res, next) => {
