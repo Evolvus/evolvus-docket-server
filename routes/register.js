@@ -17,7 +17,7 @@ module.exports = (router) => {
           res.redirect('/register');
         }
       }).catch((e) => {
-        res.status(400).send(e)
+        res.status(400).send(e);
       });
     })
     .get((req, res, next) => {

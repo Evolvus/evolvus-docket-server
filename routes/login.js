@@ -25,7 +25,7 @@ module.exports = (router) => {
             loggedIn: true
           });
         } else {
-          res.redirect('/login')
+          res.redirect('/login');
         }
       }).catch((e) => {
         res.status(400).send(e);
