@@ -47,13 +47,13 @@ app.engine('html', hbsViewEngine);
 require('./routes/main')(router);
 app.use('/', router);
 
-mongoose.connect(dbUrl, (err, db) => {
-  if (err) {
-    console.log('Failed to connect to the database');
-  } else {
-    console.log('connected to mongodb');
-  }
-});
+// mongoose.connect(dbUrl, (err, db) => {
+//   if (err) {
+//     console.log('Failed to connect to the database');
+//   } else {
+//     console.log('connected to mongodb');
+//   }
+// });
 
 /*
  ** Finally start the server
