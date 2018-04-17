@@ -1,4 +1,7 @@
 const PORT = process.env.PORT || 8080;
+const mongoose = require("mongoose");
+
+process.env.MONGO_DB_URL = "mongodb://localhost:27017/TestDocket";
 /*
  ** Test /api/audit API's
  */
@@ -30,7 +33,7 @@ describe('POST /audit', () => {
       ipAddress: '127.0.0.1',
       level: 'info',
       status: 'SUCCESS',
-      eventDateTime: "new Date().toISOString()",
+      eventDateTime: new Date().toISOString(),
       details: '{ user: "anish" }',
       keywords: 'login CDA',
       keyDataAsJSON: "keydata"
@@ -46,9 +49,8 @@ describe('POST /audit', () => {
         } else {
           debug(`response body is ${res.body}`);
           res.should.have.status(200);
-          res.body.should.equal(true);
-          // res.body.should.have.property('name')
-          // .eql(auditEvent.source);
+          res.body.should.have.property('name')
+            .eql(auditEvent.name);
           done();
         }
       });

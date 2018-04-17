@@ -19,7 +19,7 @@ module.exports = (router) => {
     .post((req, res, next) => {
       var body = _.pick(req.body, ['email', 'password']);
       user.authenticate(body.email, body.passowrd).then((result) => {
-        if (!(result)) {
+        if (result) {
           res.render('pages/single', {
             message: "",
             loggedIn: true

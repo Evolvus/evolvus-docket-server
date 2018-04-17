@@ -11,13 +11,9 @@ module.exports = (router) => {
       // put the logic here related to registration
       var body = _.pick(req.body, ['username', 'email', 'password']);
       user.register(body).then((result) => {
-        if (result) {
-          res.redirect('/login?message=' + "s");
-        } else {
-          res.redirect('/register');
-        }
+        res.redirect('/login');
       }).catch((e) => {
-        res.status(400).send(e);
+        res.redirect('/register');
       });
     })
     .get((req, res, next) => {
