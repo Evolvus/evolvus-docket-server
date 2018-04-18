@@ -22,16 +22,16 @@
 					</div>
 					<!-- /input-group -->
 				</li>
-				<li><a href="/docket"><i
+				<li><a href="/audit"><i
 						class="fa fa-home fa-fw"></i> Docket - Audit Server</a></li>
 				<li><a href="#"><i class="fa fa-th-list fa-fw"></i>
 						Applications<span class="fa arrow"></span></a>
 					<ul class="nav nav-second-level">
 						<li><select class="form-control" id="applicationChange" name="application">
 								<option value="" selected="selected">Select</option>
-								<% application.forEach((doc)=> { %>
-									<option value="<%= doc%>"><%= doc %></option>
-							<%	}) %>
+								{{#each application}}
+									<option value={{this.application}}>{{this.application}}</option>
+							{{/each}}
 							</select>
 						</li>
 					</ul>
@@ -42,9 +42,9 @@
 					<ul class="nav nav-second-level">
 						<li><select class="form-control" id="sourceChange" name="source">
 								<option value="" selected="selected">Select</option>
-								<% source.forEach((doc)=> { %>
-									<option value="<%= doc %>"><%= doc %></option>
-							<%	}) %>
+								{{#each source}}
+									<option value="{{this.source}}">{{this.source}}</option>
+							{{/each}}
 							</select>
 						</li>
 					</ul>

@@ -30,6 +30,7 @@ module.exports = (router) => {
                 });
             } else {
               debug("validation failed");
+              res.send('validation failed');
             }
           });
       } catch (e) {
@@ -38,7 +39,28 @@ module.exports = (router) => {
       }
     })
     .get((req, res, next) => {
-
+      //it will fetch all the records from database
+      try {
+        docket.getAll()
+          .then((records) => {
+            records = records.reverse();
+            var application = _.uniqBy(records, (audit) => {
+              return audit.application;
+            });
+            var source = _.uniqBy(records, (audit) => {
+              return audit.source;
+            });
+            res.render('pages/single', {
+              loggedIn: true,
+              auditRecords: records,
+              application,
+              source
+            });
+          }).catch((e) => {
+            res.status(400).send(e);
+          });
+      } catch (e) {
+        res.status(400).send(e)
+      }
     });
-
 };

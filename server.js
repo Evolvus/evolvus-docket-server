@@ -37,6 +37,21 @@ hbs.registerPartials(path.join(__dirname, "views", "partials"), (err) => {
   }
 });
 
+hbs.registerHelper('if_eq', function(a, b, opts) {
+  if (a == b)
+    return opts.fn(this);
+  else
+    return opts.inverse(this);
+});
+
+hbs.registerHelper('ternary', function(index, yes, no) {
+  var res = false;
+  if (index % 2 == 0) {
+    res = true;
+  }
+  return res ? yes : no;
+});
+
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
