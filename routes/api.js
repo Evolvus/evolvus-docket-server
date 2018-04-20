@@ -50,17 +50,73 @@ module.exports = (router) => {
             var source = _.uniqBy(records, (audit) => {
               return audit.source;
             });
+            var ipAddress = _.uniqBy(records, (audit) => {
+              return audit.ipAddress;
+            });
+            var level = _.uniqBy(records, (audit) => {
+              return audit.level;
+            });
+            var createdBy = _.uniqBy(records, (audit) => {
+              return audit.createdBy;
+            });
+            var status = _.uniqBy(records, (audit) => {
+              return audit.status;
+            });
             res.render('pages/single', {
               loggedIn: true,
               auditRecords: records,
               application,
-              source
+              source,
+              ipAddress,
+              level,
+              status,
+              createdBy
             });
           }).catch((e) => {
             res.status(400).send(e);
           });
       } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send(e);
       }
     });
+
+  router.get('/rowDetails', (req, res, next) => {
+    //get a audit by id parameter and diplays it in a dialog box
+    docket.getById(req.query.id)
+      .then((doc) => {
+        res.render('pages/row', {
+          docket: doc
+        });
+      }).catch((e) => {
+        res.status(400).send(e);
+      });
+  });
+
+  router.get('/topNoOfRecords', (req, res, next) => {
+    // get the limited audit records and displays it in a timeline
+    docket.getByLimit(parseInt(req.query.value))
+      .then((docs) => {
+        res.render('partials/body', {
+          auditRecords: docs
+        });
+      }).catch((e) => {
+        res.status(400).send(e);
+      });
+  });
+
+  router.get('/getByFilter', (req, res, next) => {
+    var parameter = _.pick(req.query, ['application', 'source', 'ipAddress', 'createdBy', 'fromDate', 'toDate', 'level', 'status']);
+    docket.getByParameters(parameter).then((docs) => {
+      if (docs.length === 0) {
+        res.send("data not available");
+      } else {
+        res.render('pages/table', {
+          auditRecords: docs
+        });
+      }
+
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+  });
 };

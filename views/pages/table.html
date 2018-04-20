@@ -17,33 +17,30 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% docarray.forEach((doc)=> { %>
-						<tr onclick="showRowDetails('<%= doc._id %>')" data-toggle="modal" data-target="#myModal">
-							<td>
-								<%= doc.application %>
-							</td>
-							<td>
-								<%= doc.name %>
-							</td>
-							<td>
-								<%= doc.source %>
-							</td>
-							<td>
-								<%= doc.eventDateTime %>
-							</td>
-							<td>
-								<%= doc.type %>
-							</td>
-							<td align="center">
-								<% if( doc.status ==='success' ||  doc.status ==='SUCCESS' ) { %>
-									<i class="fa fa-thumbs-up" style="color:green;"></i>
-									<% } %>
-										<% if( doc.status ==='failure' || doc.status === 'FAILURE') { %>
-											<span style="color:red;">X</span>
-											<% } %>
-							</td>
-						</tr>
-						<%  }) %>
+					{{#each auditRecords}}
+					<tr onclick="showRowDetails('{{this._id}}')" data-toggle="modal" data-target="#myModal">
+						<td>
+							{{this.application}}
+						</td>
+						<td>
+							{{this.name}}
+						</td>
+						<td>
+							{{this.source}}
+						</td>
+						<td>
+							{{this.eventDateTime}}
+						</td>
+						<td>
+							{{this.type}}
+						</td>
+						<td align="center">
+							{{#if_eq this.status "success"}}
+							<i class="fa fa-thumbs-up" style="color:green;"></i> {{/if_eq}} {{#if_eq this.status "failure"}}
+							<span style="color:red;">X</span> {{/if_eq}}
+						</td>
+					</tr>
+					{{/each}}
 				</tbody>
 			</table>
 		</div>

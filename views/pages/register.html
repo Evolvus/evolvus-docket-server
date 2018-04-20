@@ -25,7 +25,7 @@
     <div id="lower">
       <h1 style="text-align:center;"> Register Page </h1>
       <form name="myForm" action='/register' method="post" onsubmit="return validateForm()">
-        <input type="hidden" name="message" id="message" value="<%= message %>" />
+        <input type="hidden" name="message" id="message" value="{{ message }}" />
         <label for="loginmsg" style="color:hsla(0,100%,50%,0.5); font-family:" Helvetica Neue ",Helvetica,sans-serif;"></label>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username">

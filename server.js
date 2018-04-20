@@ -59,9 +59,13 @@ app.set("view engine", "html");
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({
-  extended: true
+  limit: '2mb',
+  extended: false
 }));
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({
+  limit: '2mb'
+}));
 
 app.engine("html", hbsViewEngine);
 

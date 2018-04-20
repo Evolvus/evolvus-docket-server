@@ -27,6 +27,7 @@
 					type: 'GET',
 					url: '/topNoOfRecords?value=' + topNoOfRecords,
 					success: function(response) {
+						console.log("response", response);
 						if (response.status === 401) {
 							window.location.href = "/login"
 						} else {
@@ -34,7 +35,7 @@
 						}
 					},
 					error: function(err) {
-						alertify.alert((err.responseText));
+						alertify.alert("value must be a integer and it should be greater than zero");
 					}
 				});
 			}

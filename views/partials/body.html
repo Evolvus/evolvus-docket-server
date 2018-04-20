@@ -21,7 +21,7 @@
 			<div class="panel-body">
 				<ul class="timeline">
 					{{#each auditRecords}}
-					<li class="{{ternary @index " " "timeline-inverted "}}" data-toggle="modal" data-target="#timemodel" onclick="showRowDetailsTimeLine('<%= doc._id %>');">
+					<li class="{{ternary @index " " "timeline-inverted "}}" data-toggle="modal" data-target="#timemodel" onclick="showRowDetailsTimeLine('{{this._id}}');">
 						{{#if_eq this.status "success"}}
 						<div class="timeline-badge success">
 							<i class="fa fa-thumbs-up"></i>
@@ -110,12 +110,12 @@
 		$("#refreshLabel").html("Updating timeline...").fadeIn();
 		$.ajax({
 			type: 'GET',
-			url: '/updateTimeline',
+			url: '/audit',
 			success: function(response) {
 				if (response.status === 401) {
 					window.location.href = "/login"
 				} else {
-					$("#timeLineData").html(response);
+					$("#wrapper").html(response);
 					$("#refreshLabel").fadeOut();
 				}
 			},

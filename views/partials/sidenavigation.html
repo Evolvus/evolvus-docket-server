@@ -55,9 +55,9 @@
 					<ul class="nav nav-second-level">
 						<li><select class="form-control" id="ipChange" name="ipAddress">
 								<option value="" selected="selected">Select</option>
-								<% ipAddress.forEach((doc)=> { %>
-									<option value="<%= doc %>"><%= doc %></option>
-							<%	}) %>
+								{{#each ipAddress}}
+									<option value="{{this.ipAddress}}">{{this.ipAddress}}</option>
+							{{/each}}
 						</select>
 						</li>
 					</ul>
@@ -68,9 +68,9 @@
 					<ul class="nav nav-second-level">
 						<li><select class="form-control" id="levelChange" name="level">
 								<option value="" selected="selected">Select</option>
-								<% level.forEach((doc)=> { %>
-									<option value="<%= doc %>"><%= doc %></option>
-							<%	}) %>
+								{{#each level}}
+									<option value="{{this.level}}">{{this.level}}</option>
+							{{/each}}
 							</select>
 						</li>
 					</ul>
@@ -104,9 +104,9 @@
 					<ul class="nav nav-second-level">
 						<li><select class="form-control" id="createdUserChange" name="createdBy">
 								<option value="" selected="selected">Select</option>
-								<%  createdBy.forEach((doc)=> { %>
-									<option value="<%= doc %>"><%= doc %></option>
-							<%	}) %>
+								{{#each createdBy}}
+									<option value="{{this.createdBy}}">{{this.createdBy}}</option>
+							{{/each}}
 							</select>
 						</li>
 					</ul>
@@ -117,9 +117,9 @@
 
 						<li><select class="form-control" id="statusDataChange" name="status">
 								<option value="" selected="selected">Select</option>success
-								<% status.forEach((doc)=> { %>
-									<option value="<%= doc %>"><%= doc %></option>
-							<%	}) %>
+								{{#each status}}
+									<option value="{{this.status}}">{{this.status}}</option>
+							{{/each}}
 							</select>
 						</li>
 					</ul>
@@ -154,7 +154,7 @@
 			var data = $("#statusDataChange").serialize();
 			$.ajax({
 				type: 'GET',
-				url: '/audit',
+				url: '/getByFilter',
 				data: data,
 				success: function(response) {
 					if (response.status === 401) {
@@ -179,7 +179,7 @@
 				$("#ajax-loader").show();
 				$.ajax({
 					type: 'GET',
-					url: '/audit',
+					url: '/getByFilter',
 					data: data,
 					success: function(response) {
 						if (response.status === 401) {
@@ -206,7 +206,7 @@
 				$("#ajax-loader").show();
 				$.ajax({
 					type: 'GET',
-					url: '/audit',
+					url: '/getByFilter',
 					data: data,
 					success: function(response) {
 						if (response.status === 401) {
@@ -232,7 +232,7 @@
 				$("#ajax-loader").show();
 				$.ajax({
 					type: 'GET',
-					url: '/audit',
+					url: '/getByFilter',
 					data: data,
 					success: function(response) {
 						if (response.status === 401) {
@@ -262,7 +262,7 @@
 				$("#ajax-loader").show();
 				$.ajax({
 					type: 'GET',
-					url: '/audit',
+					url: '/getByFilter',
 					data: data,
 					success: function(response) {
 						if (response.status === 401) {
@@ -288,7 +288,7 @@
 				$("#ajax-loader").show();
 				$.ajax({
 					type: 'GET',
-					url: '/audit',
+					url: '/getByFilter',
 					data: data,
 					success: function(response) {
 						if (response.status === 401) {
@@ -328,7 +328,7 @@
 		$("#ajax-loader").show();
 		$.ajax({
 			type: 'GET',
-			url: '/audit',
+			url: '/getByFilter',
 			data: dockerBean,
 			success: function(response) {
 				if (response.status === 401) {
@@ -344,7 +344,7 @@
 			},
 			error: function(err) {
 				$("#ajax-loader").hide();
-				alertify.alert(err);
+				alertify.alert("error");
 			}
 		});
 	});
