@@ -1,6 +1,7 @@
 const debug = require("debug")("evolvus-docket-server:routes:api");
 const _ = require("lodash");
 const docket = require("evolvus-docket");
+const moment = require('moment');
 
 const auditAttributes = ["name", "createdBy", "application", "source", "ipAddress", "level",
   "status", "eventDateTime", "details", "keywords", "keyDataAsJSON"
@@ -105,16 +106,16 @@ module.exports = (router) => {
   });
 
   router.get('/getByFilter', (req, res, next) => {
+    //filters tha data according to some filter parmateters
     var parameter = _.pick(req.query, ['application', 'source', 'ipAddress', 'createdBy', 'fromDate', 'toDate', 'level', 'status']);
+    if (typeof parameter.fromDate !== 'undefined' && typeof parameter.toDate !== 'undefined') {
+      parameter.fromDate = new Date(moment(parameter.fromDate, "DD/MM/YYYY").format("MM/DD/YYYY"));
+      parameter.toDate = new Date(moment(parameter.toDate, "DD/MM/YYYY").format("MM/DD/YYYY"));
+    }
     docket.getByParameters(parameter).then((docs) => {
-      if (docs.length === 0) {
-        res.send("data not available");
-      } else {
-        res.render('pages/table', {
-          auditRecords: docs
-        });
-      }
-
+      res.render('pages/table', {
+        auditRecords: docs
+      });
     }).catch((e) => {
       res.status(400).send(e);
     });
