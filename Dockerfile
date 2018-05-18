@@ -11,10 +11,10 @@ COPY . .
 
 
 # expose ports
-EXPOSE 8080
+EXPOSE 8085
 
 #default environment variables
 ENV NODE_ENV production
-ENV PORT 8080
+ENV PORT 8085
 
 CMD ["forever", "server.js"]
