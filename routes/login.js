@@ -1,8 +1,6 @@
 const debug = require('debug')('evolvus-docket-server:routes:login');
 const _ = require('lodash');
 const user = require('evolvus-user');
-var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
 
 module.exports = (router) => {
 
