@@ -1,4 +1,4 @@
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 
 process.env.MONGO_DB_URL = "mongodb://localhost:27017/TestDocket";
@@ -15,33 +15,45 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
-var serverUrl = "http://localhost:" + PORT;
+var serverUrl = "http://192.168.1.115:" + PORT;
 
 
 describe('Testing routes', () => {
   var id;
+  let auditEvent = {
+    name: 'loginEvent',
+    createdBy: 'anisht',
+    application: 'CDA',
+    source: 'loginPage',
+    ipAddress: '127.0.0.1',
+    level: 'info',
+    status: 'SUCCESS',
+    eventDateTime: new Date().toISOString(),
+    details: '{ user: "anish" }',
+    keywords: 'login CDA',
+    keyDataAsJSON: "keydata"
+  };
   describe('POST /audit', () => {
     let server;
     before((done) => {
       app.on('application_started', done());
     });
 
+    // try {
+    //   it('should return request entity large error', (done) => {
+    //     chai.request(serverUrl)
+    //       .post('/audit')
+    //       .send(auditEvent)
+    //       .end((err, res) => {
+    //         done();
+    //       });
+    //   });
+    // } catch (e) {
+    //
+    // }
+
+
     it('valid POST should return object with same attribute values', (done) => {
-
-      let auditEvent = {
-        name: 'loginEvent',
-        createdBy: 'anisht',
-        application: 'CDA',
-        source: 'loginPage',
-        ipAddress: '127.0.0.1',
-        level: 'info',
-        status: 'SUCCESS',
-        eventDateTime: new Date().toISOString(),
-        details: '{ user: "anish" }',
-        keywords: 'login CDA',
-        keyDataAsJSON: "keydata"
-      };
-
       chai.request(serverUrl)
         .post('/audit')
         .send(auditEvent)

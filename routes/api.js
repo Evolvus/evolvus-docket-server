@@ -17,6 +17,9 @@ module.exports = (router) => {
       //debug("body is", JSON.stringify(req));
       try {
         let body = _.pick(req.body, auditAttributes);
+        var date = body.eventDateTime;
+        body.eventDateTime = moment(new Date(date)).toISOString();
+        body.status = body.status.toUpperCase();
         debug("request body is: ", JSON.stringify(body));
         docket.validate(body)
           .then((result) => {
@@ -34,9 +37,8 @@ module.exports = (router) => {
               res.send('validation failed');
             }
           });
-      } catch (e) {
-        res.status(400)
-          .send(e);
+      } catch (error) {
+        res.status(400).send(error.message);
       }
     })
     .get((req, res, next) => {
@@ -45,34 +47,7 @@ module.exports = (router) => {
         docket.getAll()
           .then((records) => {
             records = records.reverse();
-            var application = _.uniqBy(records, (audit) => {
-              return audit.application;
-            });
-            var source = _.uniqBy(records, (audit) => {
-              return audit.source;
-            });
-            var ipAddress = _.uniqBy(records, (audit) => {
-              return audit.ipAddress;
-            });
-            var level = _.uniqBy(records, (audit) => {
-              return audit.level;
-            });
-            var createdBy = _.uniqBy(records, (audit) => {
-              return audit.createdBy;
-            });
-            var status = _.uniqBy(records, (audit) => {
-              return audit.status;
-            });
-            res.render('pages/single', {
-              loggedIn: true,
-              auditRecords: records,
-              application,
-              source,
-              ipAddress,
-              level,
-              status,
-              createdBy
-            });
+            res.send(records);
           }).catch((e) => {
             res.status(400).send(e);
           });
@@ -107,17 +82,49 @@ module.exports = (router) => {
 
   router.get('/getByFilter', (req, res, next) => {
     //filters tha data according to some filter parmateters
-    var parameter = _.pick(req.query, ['application', 'source', 'ipAddress', 'createdBy', 'fromDate', 'toDate', 'level', 'status']);
+    var parameter = _.pick(req.query, ['application', 'source', 'level', 'ipAddress', 'createdBy', 'status', 'fromDate', 'toDate']);
     if (typeof parameter.fromDate !== 'undefined' && typeof parameter.toDate !== 'undefined') {
-      parameter.fromDate = new Date(moment(parameter.fromDate, "DD/MM/YYYY").format("MM/DD/YYYY"));
-      parameter.toDate = new Date(moment(parameter.toDate, "DD/MM/YYYY").format("MM/DD/YYYY"));
+      parameter.fromDate = moment(new Date(parameter.fromDate)).toString();
+      parameter.toDate = moment(new Date(parameter.toDate)).toString();
     }
     docket.getByParameters(parameter).then((docs) => {
-      res.render('pages/table', {
-        auditRecords: docs
-      });
+      if (docs) {
+        res.send(docs);
+      } else {
+        res.send({});
+      }
+      // res.render('pages/table', {
+      //   auditRecords: docs
+      // });
     }).catch((e) => {
-      res.status(400).send(e);
+      res.status(400).send(e.message);
     });
+  });
+
+  router.get('/getFilterOptions', (req, res, next) => {
+    try {
+      docket.getAll()
+        .then((records) => {
+          var application = _.uniq(_.map(records, 'application'));
+          var source = _.uniq(_.map(records, 'source'));
+          var createdBy = _.uniq(_.map(records, 'createdBy'));
+          var ipAddress = _.uniq(_.map(records, 'ipAddress'));
+          var status = _.uniq(_.map(records, 'status'));
+          var level = _.uniq(_.map(records, 'level'));
+          var filterOptions = {
+            applicationOptions: application,
+            sourcesOptions: source,
+            ipAddressOptions: ipAddress,
+            createdByOptions: createdBy,
+            statusOptions: status,
+            levelOptions: level
+          };
+          res.send(filterOptions);
+        }).catch((e) => {
+          res.status(400).send(e);
+        });
+    } catch (e) {
+      res.status(400).send(e);
+    }
   });
 };
