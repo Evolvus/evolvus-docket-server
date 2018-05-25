@@ -1,0 +1,6 @@
+projectKey=sonar:evolvus-docket-server:1.0.2
+serverUrl=http://10.10.69.199/sonar
+serverVersion=6.5.0.27846
+dashboardUrl=http://10.10.69.199/sonar/dashboard/index/sonar:evolvus-docket-server:1.0.2
+ceTaskId=AWOVnDr_Dq8R-RR74Zh1
+ceTaskUrl=http://10.10.69.199/sonar/api/ce/task?id=AWOVnDr_Dq8R-RR74Zh1
