@@ -23,7 +23,6 @@ module.exports = (router) => {
         debug("request body is: ", JSON.stringify(body));
         docket.validate(body)
           .then((result) => {
-            if (result) {
               docket.save(body)
                 .then((doc) => {
                   res.send(doc);
@@ -32,10 +31,10 @@ module.exports = (router) => {
                   res.status(400)
                     .send(e);
                 });
-            } else {
-              debug("validation failed");
-              res.send('validation failed');
-            }
+          }).catch((e)=> {
+            debug(`validation failed ${e}`);
+            res.status(400)
+            .send(e);
           });
       } catch (error) {
         res.status(400).send(error.message);
