@@ -7,6 +7,9 @@ RUN git clone https://github.com/Evolvus/evolvus-docket-ng-ui.git
 WORKDIR /usr/ng-app/evolvus-docket-ng-ui/
 RUN npm install -g @angular/cli typescript uws
 RUN npm  i --save
+RUN npm version patch
+RUN git git push https://kumaresanb:kumar0910@github.com/Evolvus/evolvus-docket-ng-ui
+RUN npm publish
 RUN ng build --prod --build-optimizer
 
 
