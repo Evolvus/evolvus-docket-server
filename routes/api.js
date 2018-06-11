@@ -16,11 +16,11 @@ module.exports = (router) => {
       // audit events
       //debug("body is", JSON.stringify(req));
       try {
+        debug("request body is: ", JSON.stringify(req.body));
         let body = _.pick(req.body, auditAttributes);
         var date = body.eventDateTime;
-        body.eventDateTime = moment(new Date(date)).toISOString();
+        body.eventDateTime =new Date(parseInt(date)).toISOString();
         body.status = body.status.toUpperCase();
-        debug("request body is: ", JSON.stringify(body));
         docket.validate(body)
           .then((result) => {
               docket.save(body)
@@ -28,6 +28,7 @@ module.exports = (router) => {
                   res.send(doc);
                 })
                 .catch((e) => {
+                  debug(`failed to save ${e}`)
                   res.status(400)
                     .send(e);
                 });
@@ -37,20 +38,22 @@ module.exports = (router) => {
             .send(e);
           });
       } catch (error) {
-        res.status(400).send(error.message);
+        debug(`caugth exception ${error}`)
+        res.status(400).send(error);
       }
     })
     .get((req, res, next) => {
       //it will fetch all the records from database
       try {
-        docket.getAll()
+        docket.getAll(25)
           .then((records) => {
-            records = records.reverse();
             res.send(records);
           }).catch((e) => {
+            debug(`error: ${e}`);
             res.status(400).send(e);
           });
       } catch (e) {
+        debug(`caught exception ${e}`);
         res.status(400).send(e);
       }
     });
@@ -82,19 +85,12 @@ module.exports = (router) => {
   router.get('/getByFilter', (req, res, next) => {
     //filters tha data according to some filter parmateters
     var parameter = _.pick(req.query, ['application', 'source', 'level', 'ipAddress', 'createdBy', 'status', 'fromDate', 'toDate']);
-    if (typeof parameter.fromDate !== 'undefined' && typeof parameter.toDate !== 'undefined') {
-      parameter.fromDate = moment(new Date(parameter.fromDate)).toString();
-      parameter.toDate = moment(new Date(parameter.toDate)).toString();
-    }
     docket.getByParameters(parameter).then((docs) => {
-      if (docs) {
-        res.send(docs);
+      if (_.isEmpty(docs)) {
+        res.json({message:"Data not available for this criteria"});
       } else {
-        res.send({});
+        res.send(docs);
       }
-      // res.render('pages/table', {
-      //   auditRecords: docs
-      // });
     }).catch((e) => {
       res.status(400).send(e.message);
     });
@@ -102,7 +98,7 @@ module.exports = (router) => {
 
   router.get('/getFilterOptions', (req, res, next) => {
     try {
-      docket.getAll()
+      docket.getAll(50)
         .then((records) => {
           var application = _.uniq(_.map(records, 'application'));
           var source = _.uniq(_.map(records, 'source'));

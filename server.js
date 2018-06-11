@@ -4,7 +4,7 @@
  ** defaults to 3000
  */
 const PORT = process.env.PORT || 3000;
-var dbUrl = process.env.MONGO_DB_URL || "mongodb://localhost:27017/Docket";
+var dbUrl = process.env.MONGO_DB_URL || "mongodb://10.10.69.204:27017/Docket";
 
 /*
  ** Get all the required libraries
