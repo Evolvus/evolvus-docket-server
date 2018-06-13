@@ -1,7 +1,7 @@
 FROM node:8.9 as node
 
 WORKDIR /usr/ng-app/
-
+RUN npm install pm2 -g
 RUN git clone https://github.com/Evolvus/evolvus-docket-ng-ui.git
 
 WORKDIR /usr/ng-app/evolvus-docket-ng-ui/
@@ -23,4 +23,4 @@ RUN cp /usr/ng-app/evolvus-docket-ng-ui/dist/*.* /usr/ng-app/public
 ENV NODE_ENV production
 ENV PORT 8085
 EXPOSE 8085
-CMD ["npm", "start"]
+CMD ["pm2-runtime", "npm", "--", "start"]
