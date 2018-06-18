@@ -23,4 +23,4 @@ RUN cp /usr/ng-app/evolvus-docket-ng-ui/dist/*.* /usr/ng-app/public
 ENV NODE_ENV production
 ENV PORT 8085
 EXPOSE 8085
-CMD ["pm2-runtime", "npm", "--", "start"]
+CMD ["pm2-runtime", "npm", "--", "start","-i max"]
