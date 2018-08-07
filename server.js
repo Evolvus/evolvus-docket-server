@@ -4,8 +4,6 @@
  ** defaults to 3000
  */
 const PORT = process.env.PORT || 3000;
-var dbUrl = process.env.MONGO_DB_URL || "mongodb://localhost:27017/Docket";
-
 /*
  ** Get all the required libraries
  */
@@ -15,15 +13,9 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const hbs = require("hbs");
 const helmet = require("helmet");
-const mongoose = require("mongoose");
 
-mongoose.connect(dbUrl, (err, db) => {
-  if (err) {
-    debug("Failed to connect to the database");
-  } else {
-    debug("connected to mongodb");
-  }
-});
+const connection = require("@evolvus/evolvus-mongo-dao").connection;
+var dbConnection = connection.connect("PLATFORM");
 
 const hbsViewEngine = hbs.__express;
 const app = express();
@@ -90,7 +82,7 @@ app.engine("html", hbsViewEngine);
 
 
 require("./routes/main")(router);
-app.use("/", router);
+app.use("/api", router);
 
 
 /*
