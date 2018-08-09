@@ -41,7 +41,7 @@ module.exports = (router) => {
           })
           .catch((e) => {
             response.status = "400";
-            response.description = `Failed to save`;
+            response.description = `Failed to save audit`;
             response.data = {};
             res.status(400)
               .send(e);
@@ -59,17 +59,12 @@ module.exports = (router) => {
       };
       debug("query: " + JSON.stringify(req.query));
       var limit = _.get(req.query, "limit", LIMIT);
-      // var pageSize = _.get(req.query, "pageSize", PAGE_SIZE);
-      // var pageNo = _.get(req.query, "pageNo", 1);
-      // var skipCount = (pageNo - 1) * pageSize;
-
       var filter = _.omitBy(req.query, function(value, key) {
         return value.startsWith("undefined");
       });
       var sort = _.get(req.query, "sort", {});
       var orderby = sortable(sort);
       var skipCount = 0;
-      // limit = +pageSize > +limit ? +limit : +pageSize;
 
       try {
         docket.find(filter, orderby, skipCount, +limit)
@@ -97,82 +92,57 @@ module.exports = (router) => {
           });
       } catch (e) {
         response.status = "400";
-        response.description = `Unable to fetch all Users due to ${e}`;
+        response.description = `Unable to fetch all Audits due to ${e}`;
         response.data = [];
         debug("response: " + JSON.stringify(response));
         res.status(400).json(response);
       }
     });
 
-  // router.get('/rowDetails', (req, res, next) => {
-  //   //get a audit by id parameter and diplays it in a dialog box
-  //   docket.getById(req.query.id)
-  //     .then((doc) => {
-  //       res.render('pages/row', {
-  //         docket: doc
-  //       });
-  //     }).catch((e) => {
-  //       res.status(400).send(e);
-  //     });
-  // });
-  //
-  // router.get('/topNoOfRecords', (req, res, next) => {
-  //   // get the limited audit records and displays it in a timeline
-  //   docket.getByLimit(parseInt(req.query.value))
-  //     .then((docs) => {
-  //       res.render('partials/body', {
-  //         auditRecords: docs
-  //       });
-  //     }).catch((e) => {
-  //       res.status(400).send(e);
-  //     });
-  // });
-  //
-  // router.get('/getByFilter', (req, res, next) => {
-  //   //filters tha data according to some filter parmateters
-  //   var parameter = _.pick(req.query, ['application', 'source', 'level', 'ipAddress', 'createdBy', 'status', 'fromDate', 'toDate']);
-  //   docket.getByParameters(parameter).then((docs) => {
-  //     if (_.isEmpty(docs)) {
-  //       res.json({
-  //         message: "Data not available for this criteria"
-  //       });
-  //     } else {
-  //       res.send(docs);
-  //     }
-  //   }).catch((e) => {
-  //     res.status(400).send(e.message);
-  //   });
-  // });
 
   router.get('/getFilterOptions', (req, res, next) => {
     try {
-      docket.getAll(50)
+      const response = {
+        "status": "200",
+        "description": "",
+        "data": {}
+      };
+      docket.find({}, {}, 0, 0)
         .then((records) => {
           var application = _.uniq(_.map(records, 'application'));
           var source = _.uniq(_.map(records, 'source'));
           var createdBy = _.uniq(_.map(records, 'createdBy'));
           var ipAddress = _.uniq(_.map(records, 'ipAddress'));
           var status = _.uniq(_.map(records, 'status'));
-          var level = _.uniq(_.map(records, 'level'));
+          // var level = _.uniq(_.map(records, 'level'));
           var filterOptions = {
             applicationOptions: application,
             sourcesOptions: source,
             ipAddressOptions: ipAddress,
             createdByOptions: createdBy,
             statusOptions: status,
-            levelOptions: level
+            // levelOptions: level
           };
-          res.send(filterOptions);
+          response.status = "200";
+          response.description = "Data found";
+          response.data = filterOptions;
+          res.status(200).json(response);
         }).catch((e) => {
-          res.status(400).send(e);
+          debug(`failed to fetch filterOptions ${e}`);
+          response.status = "400";
+          response.description = `Unable to fetch all filterOptions due to ${e}`;
+          response.data = [];
+          res.status(400).json(response);
         });
     } catch (e) {
-      res.status(400).send(e);
+      response.status = "400";
+      response.description = `Unable to fetch all filterOptions due to ${e}`;
+      response.data = [];
+      debug("response: " + JSON.stringify(response));
+      res.status(400).json(response);
     }
   });
 };
-
-
 
 function sortable(sort) {
   if (typeof sort === 'undefined' ||
