@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 /*
  ** Get all the required libraries
  */
+const http = require("http");
 const debug = require("debug")("evolvus-docket-server:server");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -14,8 +15,30 @@ const path = require("path");
 const hbs = require("hbs");
 const helmet = require("helmet");
 
+
+const _ = require("lodash");
+const terminus = require("@godaddy/terminus");
+const healthCheck = require("@evolvus/evolvus-node-health-check");
+const healthCheckAttributes = ["status", "saveTime"];
+let body = _.pick(healthCheckAttributes);
+
 const connection = require("@evolvus/evolvus-mongo-dao").connection;
-var dbConnection = connection.connect("PLATFORM");
+var dbConnection = connection.connect("PLATFORM").then((res,err)=>{
+  if(err)
+  {
+  debug('connection problem due to ',err);
+  }else {
+    debug("connected to mongodb");
+    body.status = "working";
+    body.saveTime = new Date().toISOString();
+    healthCheck.save(body).then((ent) => {
+      debug("healthcheck object saved")
+    }).catch((e) => {
+      debug(`unable to save Healthcheck object due to ${e}`);
+    });
+    
+  }
+});
 
 const hbsViewEngine = hbs.__express;
 const app = express();
@@ -84,13 +107,48 @@ app.engine("html", hbsViewEngine);
 require("./routes/main")(router);
 app.use("/api", router);
 
+function onSignal() {
+  console.log("server is starting cleanup");
+  // start cleanup of resource, like databases or file descriptors
+  db.disconnect();
+}
 
+function onHealthCheck() {
+  // checks if the system is healthy, like the db connection is live
+  // resolves, if health, rejects if not
+  return new Promise((resolve, reject) => {
+
+    healthCheck.getAll(-1).then((healthChecks) => {
+      if (healthChecks.length > 0) {
+        resolve("CONNECTION CONNECTED");
+        debug("CONNECTION CONNECTED");
+      } else {
+        reject("CONNECTION PROBLEM");
+        debug("CONNECTION PROBLEM");
+      }
+    }).catch((e) => {
+      debug("CONNECTION PROBLEM");
+      reject("CONNECTION PROBLEM");
+    });
+  });
+};
+
+const server = http.createServer(app);
+
+terminus(server, {
+  signal: "SIGINT",
+  healthChecks: {
+    "/api/healthcheck": onHealthCheck,
+  },
+  onSignal
+});
 /*
  ** Finally start the server
  */
-const server = app.listen(PORT, () => {
+server.listen(PORT, () => {
   debug("server started: ", PORT);
-  app.emit('application_started');
+  app.emit("application_started");
 });
+
 
 module.exports.app = app;
