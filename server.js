@@ -11,23 +11,19 @@ const http = require("http");
 const debug = require("debug")("evolvus-docket-server:server");
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
-const hbs = require("hbs");
 const helmet = require("helmet");
-
-
 const _ = require("lodash");
 const terminus = require("@godaddy/terminus");
 const healthCheck = require("@evolvus/evolvus-node-health-check");
 const healthCheckAttributes = ["status", "saveTime"];
+const connection = require("@evolvus/evolvus-mongo-dao").connection;
+
 let body = _.pick(healthCheckAttributes);
 
-const connection = require("@evolvus/evolvus-mongo-dao").connection;
-var dbConnection = connection.connect("PLATFORM").then((res,err)=>{
-  if(err)
-  {
-  debug('connection problem due to ',err);
-  }else {
+var dbConnection = connection.connect("PLATFORM").then((res, err) => {
+  if (err) {
+    debug('connection problem due to ', err);
+  } else {
     debug("connected to mongodb");
     body.status = "working";
     body.saveTime = new Date().toISOString();
@@ -36,43 +32,13 @@ var dbConnection = connection.connect("PLATFORM").then((res,err)=>{
     }).catch((e) => {
       debug(`unable to save Healthcheck object due to ${e}`);
     });
-    
   }
 });
 
-const hbsViewEngine = hbs.__express;
 const app = express();
 const router = express.Router();
 
-hbs.registerPartials(path.join(__dirname, "views", "partials"), (err) => {
-  if (err) {
-    debug("error registering partials: ", err);
-  } else {
-    debug("registering hbs partials");
-  }
-});
-
-hbs.registerHelper('if_eq', function(a, b, opts) {
-  if (a == b)
-    return opts.fn(this);
-  else
-    return opts.inverse(this);
-});
-
-hbs.registerHelper('ternary', function(index, yes, no) {
-  var res = false;
-  if (index % 2 == 0) {
-    res = true;
-  }
-  return res ? yes : no;
-});
-
-
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "html");
-
 app.use(helmet());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({
   limit: '2mb',
   extended: false
@@ -100,9 +66,6 @@ app.use(function(req, res, next) {
   // Pass to next layer of middleware
   next();
 });
-
-app.engine("html", hbsViewEngine);
-
 
 require("./routes/main")(router);
 app.use("/api", router);
