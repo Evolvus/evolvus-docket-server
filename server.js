@@ -10,7 +10,12 @@ const PORT = process.env.PORT || 3000;
 const http = require("http");
 const debug = require("debug")("evolvus-docket-server:server");
 const express = require("express");
+const app = express();
+const router = express.Router();
 const bodyParser = require("body-parser");
+const path = require("path");
+const hbs = require("hbs");
+const hbsViewEngine = hbs.__express;
 const helmet = require("helmet");
 const _ = require("lodash");
 const terminus = require("@godaddy/terminus");
@@ -19,6 +24,34 @@ const healthCheckAttributes = ["status", "saveTime"];
 const connection = require("@evolvus/evolvus-mongo-dao").connection;
 
 let body = _.pick(healthCheckAttributes);
+
+hbs.registerPartials(path.join(__dirname, "views", "partials"), (err) => {
+  if (err) {
+    debug("error registering partials: ", err);
+  } else {
+    debug("registering hbs partials");
+  }
+});
+
+hbs.registerHelper('if_eq', function(a, b, opts) {
+  if (a == b)
+    return opts.fn(this);
+  else
+    return opts.inverse(this);
+});
+
+hbs.registerHelper('ternary', function(index, yes, no) {
+  var res = false;
+  if (index % 2 == 0) {
+    res = true;
+  }
+  return res ? yes : no;
+});
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "html");
+
+app.use(express.static(path.join(__dirname, "public")));
 
 var dbConnection = connection.connect("PLATFORM").then((res, err) => {
   if (err) {
@@ -35,8 +68,7 @@ var dbConnection = connection.connect("PLATFORM").then((res, err) => {
   }
 });
 
-const app = express();
-const router = express.Router();
+
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({
