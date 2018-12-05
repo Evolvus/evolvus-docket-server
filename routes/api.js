@@ -59,13 +59,21 @@ module.exports = (router) => {
       };
       debug("query: " + JSON.stringify(req.query));
       var limit = _.get(req.query, "limit", LIMIT);
-      var filter = _.omitBy(req.query, function(value, key) {
+      var filter = _.omitBy(req.query, function (value, key) {
         return value.startsWith("undefined");
       });
       var sort = _.get(req.query, "sort", {});
       var orderby = sortable(sort);
       var skipCount = 0;
-
+      let start, end;
+      if (filter.toDate && filter.fromDate) {
+        var a = new Date(filter.fromDate);
+        var b = new Date(filter.toDate);
+        start = moment(a).startOf('day').toISOString();
+        end = moment(b).endOf('day').toISOString();
+        filter.fromDate = start;
+        filter.toDate = end;
+      };
       try {
         docket.find(filter, orderby, skipCount, +limit)
           .then((result) => {
