@@ -108,48 +108,53 @@ module.exports = (router) => {
     });
 
 
-  router.get('/getFilterOptions', (req, res, next) => {
-    try {
-      const response = {
-        "status": "200",
-        "description": "",
-        "data": {}
-      };
-      docket.find({}, {}, 0, 0)
-        .then((records) => {
-          var application = _.uniq(_.map(records, 'application'));
-          var source = _.uniq(_.map(records, 'source'));
-          var createdBy = _.uniq(_.map(records, 'createdBy'));
-          var ipAddress = _.uniq(_.map(records, 'ipAddress'));
-          var status = _.uniq(_.map(records, 'status'));
-          // var level = _.uniq(_.map(records, 'level'));
-          var filterOptions = {
-            applicationOptions: application,
-            sourcesOptions: source,
-            ipAddressOptions: ipAddress,
-            createdByOptions: createdBy,
-            statusOptions: status,
-            // levelOptions: level
-          };
-          response.status = "200";
-          response.description = "Data found";
-          response.data = filterOptions;
-          res.status(200).json(response);
-        }).catch((e) => {
-          debug(`failed to fetch filterOptions ${e}`);
-          response.status = "400";
-          response.description = `Unable to fetch all filterOptions due to ${e}`;
-          response.data = [];
-          res.status(400).json(response);
+    router.get('/getFilterOptions', (req, res, next) => {
+      try {
+        const response = {
+          "status": "200",
+          "description": "",
+          "data": {}
+        };
+        console.log(req.query);  
+        
+        var filter = _.omitBy(req.query, function (value, key) {
+          return value.startsWith("undefined");
         });
-    } catch (e) {
-      response.status = "400";
-      response.description = `Unable to fetch all filterOptions due to ${e}`;
-      response.data = [];
-      debug("response: " + JSON.stringify(response));
-      res.status(400).json(response);
-    }
-  });
+        Promise.all([docket.find(filter, {}, 0, 0),docket.find({}, {}, 0, 0)])
+          .then((records) => {
+            var application = _.uniq(_.map(records[1], 'application'));
+            var source = _.uniq(_.map(records[0], 'source'));
+            var createdBy = _.uniq(_.map(records[0], 'createdBy'));
+            var ipAddress = _.uniq(_.map(records[0], 'ipAddress'));
+            var status = ["SUCCESS","FAILURE"];
+            // var level = _.uniq(_.map(records, 'level'));
+            var filterOptions = {
+              applicationOptions: application,
+              sourcesOptions: source,
+              ipAddressOptions: ipAddress,
+              createdByOptions: createdBy,
+              statusOptions: status,
+              // levelOptions: level
+            };
+            response.status = "200";
+            response.description = "Data found";
+            response.data = filterOptions;
+            res.status(200).json(response);
+          }).catch((e) => {
+            debug(`failed to fetch filterOptions ${e}`);
+            response.status = "400";
+            response.description = `Unable to fetch all filterOptions due to ${e}`;
+            response.data = [];
+            res.status(400).json(response);
+          });
+      } catch (e) {
+        response.status = "400";
+        response.description = `Unable to fetch all filterOptions due to ${e}`;
+        response.data = [];
+        debug("response: " + JSON.stringify(response));
+        res.status(400).json(response);
+      }
+    });
 };
 
 function sortable(sort) {
