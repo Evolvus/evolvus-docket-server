@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Evolvus/evolvus-docket-server#readme",
   "dependencies": {
-    "@evolvus/evolvus-docket": "^1.0.1",
+    "@evolvus/evolvus-docket": "^1.0.2",
     "@evolvus/evolvus-mongo-dao": "^1.0.1",
     "@evolvus/evolvus-node-health-check": "^2.0.1",
     "@godaddy/terminus": "^2.4.1",
