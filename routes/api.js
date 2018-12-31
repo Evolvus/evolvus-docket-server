@@ -30,13 +30,12 @@ module.exports = (router) => {
         var date = body.eventDateTime;
         body.eventDateTime = moment(new Date(date)).toISOString();
         body.status = body.status.toUpperCase();
-        debug("request body is: ", JSON.stringify(body));
         docket.save(body)
           .then((savedAudit) => {
             response.status = "200";
             response.description = `Audit saved successfully`;
             response.data = savedAudit;
-            debug(`Response is: ${JSON.stringify(response)}`);
+            debug(`Response status is: ${JSON.stringify(response.status)}`);
             res.status(200).json(response);
           })
           .catch((e) => {
@@ -74,7 +73,7 @@ module.exports = (router) => {
               response.description = "Records found";
               response.data = result;
               response.totalNoOfRecords = result.length;
-              debug("response: " + JSON.stringify(response));
+              debug("response status is : " + JSON.stringify(response.status));
               res.status(200).json(response);
             } else {
               response.status = "200";
